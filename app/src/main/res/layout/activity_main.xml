@@ -72,7 +72,7 @@
                 android:text="X5" />
 
             <RadioButton
-                android:id="@+id/rb_native"
+                android:id="@+id/rb_original"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="原生" />

@@ -26,6 +26,10 @@
             android:name=".crosswalk.CrosswalkActivity"
             android:hardwareAccelerated="true" />
 
+        <activity
+            android:name=".original.OriginalActivity"
+            android:hardwareAccelerated="true" />
+
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

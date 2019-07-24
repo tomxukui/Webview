@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.xukui.webview.crosswalk.CrosswalkActivity;
+import com.xukui.webview.original.OriginalActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
 
-                    case R.id.rb_native: {
-                        Toast.makeText(MainActivity.this, "暂不支持", Toast.LENGTH_SHORT).show();
+                    case R.id.rb_original: {
+                        Intent intent = OriginalActivity.buildIntent(MainActivity.this, address);
+                        startActivity(intent);
                     }
                     break;
 
