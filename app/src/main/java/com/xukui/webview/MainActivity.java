@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.xukui.webview.crosswalk.CrosswalkActivity;
-import com.xukui.webview.original.WebkitActivity;
+import com.xukui.webview.webkit.WebkitActivity;
 
 public class MainActivity extends AppCompatActivity {
 

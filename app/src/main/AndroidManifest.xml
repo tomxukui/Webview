@@ -27,7 +27,7 @@
             android:hardwareAccelerated="true" />
 
         <activity
-            android:name=".original.WebkitActivity"
+            android:name=".webkit.WebkitActivity"
             android:hardwareAccelerated="true" />
 
     </application>
