@@ -38,6 +38,48 @@ public class CrosswalkActivity extends AppCompatActivity {
         webView.loadUrl(mAddress);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (webView != null) {
+            webView.onNewIntent(intent);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (webView != null) {
+            webView.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.resumeTimers();
+            webView.onShow();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.pauseTimers();
+            webView.onHide();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (webView != null) {
+            webView.onDestroy();
+        }
+    }
+
     public static Intent buildIntent(Context context, String address) {
         Intent intent = new Intent(context, CrosswalkActivity.class);
         intent.putExtra(EXTRA_ADDRESS, address);
