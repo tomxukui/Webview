@@ -18,7 +18,6 @@
                 android:id="@+id/rb_baidu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="百度" />
 
             <RadioButton
@@ -40,8 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="请输入自定义的网址"
-            android:visibility="gone" />
+            android:hint="请输入自定义的网址" />
 
         <Button
             android:id="@+id/btn_crosswalk"

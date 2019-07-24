@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         setView();
+
+        rg_website.check(R.id.rb_baidu);
     }
 
     private void initView() {
