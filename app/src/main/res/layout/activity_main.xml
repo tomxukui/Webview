@@ -9,10 +9,45 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+        <RadioGroup
+            android:id="@+id/rg_website"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rb_baidu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="百度" />
+
+            <RadioButton
+                android:id="@+id/rb_youku"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="优酷" />
+
+            <RadioButton
+                android:id="@+id/rb_custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="自定义" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/et_custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="请输入自定义的网址"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btn_crosswalk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="Crosswalk" />
 
     </LinearLayout>
