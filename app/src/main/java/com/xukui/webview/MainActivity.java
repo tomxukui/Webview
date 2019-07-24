@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.xukui.webview.crosswalk.CrosswalkActivity;
-import com.xukui.webview.original.OriginalActivity;
+import com.xukui.webview.original.WebkitActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
 
-                    case R.id.rb_original: {
-                        Intent intent = OriginalActivity.buildIntent(MainActivity.this, address);
+                    case R.id.rb_webkit: {
+                        Intent intent = WebkitActivity.buildIntent(MainActivity.this, address);
                         startActivity(intent);
                     }
                     break;

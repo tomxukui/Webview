@@ -72,10 +72,10 @@
                 android:text="X5" />
 
             <RadioButton
-                android:id="@+id/rb_original"
+                android:id="@+id/rb_webkit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="原生" />
+                android:text="Webkit" />
 
         </RadioGroup>
 

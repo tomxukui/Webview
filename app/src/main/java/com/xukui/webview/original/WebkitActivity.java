@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 import com.xukui.webview.R;
 
-public class OriginalActivity extends AppCompatActivity {
+public class WebkitActivity extends AppCompatActivity {
 
     private static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
@@ -19,7 +19,7 @@ public class OriginalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_original);
+        setContentView(R.layout.activity_webkit);
         initData();
         initView();
         setView();
@@ -38,7 +38,7 @@ public class OriginalActivity extends AppCompatActivity {
     }
 
     public static Intent buildIntent(Context context, String address) {
-        Intent intent = new Intent(context, OriginalActivity.class);
+        Intent intent = new Intent(context, WebkitActivity.class);
         intent.putExtra(EXTRA_ADDRESS, address);
         return intent;
     }
