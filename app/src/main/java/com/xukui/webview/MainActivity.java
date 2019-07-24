@@ -15,9 +15,10 @@ import com.xukui.webview.crosswalk.CrosswalkActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btn_crosswalk;
     private RadioGroup rg_website;
     private EditText et_custom;
+    private RadioGroup rg_webview;
+    private Button btn_confirm;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
         setView();
 
         rg_website.check(R.id.rb_baidu);
+        rg_webview.check(R.id.rb_crosswalk);
     }
 
     private void initView() {
-        btn_crosswalk = findViewById(R.id.btn_crosswalk);
         rg_website = findViewById(R.id.rg_website);
         et_custom = findViewById(R.id.et_custom);
+        rg_webview = findViewById(R.id.rg_webview);
+        btn_confirm = findViewById(R.id.btn_confirm);
     }
 
     private void setView() {
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        btn_crosswalk.setOnClickListener(new View.OnClickListener() {
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -56,8 +59,28 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = CrosswalkActivity.buildIntent(MainActivity.this, address);
-                startActivity(intent);
+                switch (rg_webview.getCheckedRadioButtonId()) {
+
+                    case R.id.rb_crosswalk: {
+                        Intent intent = CrosswalkActivity.buildIntent(MainActivity.this, address);
+                        startActivity(intent);
+                    }
+                    break;
+
+                    case R.id.rb_x5: {
+                        Toast.makeText(MainActivity.this, "暂不支持", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                    case R.id.rb_native: {
+                        Toast.makeText(MainActivity.this, "暂不支持", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                    default:
+                        break;
+
+                }
             }
 
         });

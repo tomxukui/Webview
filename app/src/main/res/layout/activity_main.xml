@@ -11,14 +11,14 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:text="网站"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="网站" />
 
         <RadioGroup
             android:id="@+id/rg_website"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
             <RadioButton
                 android:id="@+id/rb_baidu"
@@ -47,12 +47,44 @@
             android:layout_marginTop="10dp"
             android:hint="请输入自定义的网址" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="内核" />
+
+        <RadioGroup
+            android:id="@+id/rg_webview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <RadioButton
+                android:id="@+id/rb_crosswalk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crosswalk" />
+
+            <RadioButton
+                android:id="@+id/rb_x5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="X5" />
+
+            <RadioButton
+                android:id="@+id/rb_native"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="原生" />
+
+        </RadioGroup>
+
         <Button
-            android:id="@+id/btn_crosswalk"
+            android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Crosswalk" />
+            android:text="确定" />
 
     </LinearLayout>
 
