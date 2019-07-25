@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.xukui.webview.R;
 
@@ -19,6 +21,8 @@ public class CrosswalkActivity extends AppCompatActivity {
 
     private static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
+    private Toolbar toolbar;
+    private TextView tv_title;
     private XWalkView webView;
 
     private String mAddress;
@@ -39,6 +43,8 @@ public class CrosswalkActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        tv_title = findViewById(R.id.tv_title);
         webView = findViewById(R.id.webView);
     }
 
@@ -73,6 +79,12 @@ public class CrosswalkActivity extends AppCompatActivity {
         webView.clearCache(true);
         //设置回调
         webView.setUIClient(new XWalkUIClient(webView) {
+
+            @Override
+            public void onReceivedTitle(XWalkView view, String title) {
+                super.onReceivedTitle(view, title);
+                tv_title.setText(title);
+            }
 
             @Override
             public void onPageLoadStarted(XWalkView view, String url) {
