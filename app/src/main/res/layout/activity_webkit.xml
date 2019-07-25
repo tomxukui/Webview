@@ -30,11 +30,18 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <WebView
-        android:id="@+id/webView"
+    <FrameLayout
+        android:id="@+id/frame_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/toolbar">
+
+        <com.xukui.webview.webkit.VideoEnabledWebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/bar_loading"
@@ -48,7 +55,7 @@
         android:visibility="gone" />
 
     <FrameLayout
-        android:id="@+id/frame_full"
+        android:id="@+id/frame_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />

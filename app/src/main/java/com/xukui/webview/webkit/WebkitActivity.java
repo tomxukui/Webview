@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -32,9 +31,12 @@ public class WebkitActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TextView tv_title;
-    private WebView webView;
+    private FrameLayout frame_webview;
+    private VideoEnabledWebView webView;
     private ProgressBar bar_loading;
-    private FrameLayout frame_full;
+    private FrameLayout frame_video;
+
+    private VideoEnabledWebChromeClient mWebChromeClient;
 
     private String mAddress;
 
@@ -57,9 +59,10 @@ public class WebkitActivity extends AppCompatActivity {
     private void initView() {
         toolbar = findViewById(R.id.toolbar);
         tv_title = findViewById(R.id.tv_title);
+        frame_webview = findViewById(R.id.frame_webview);
         webView = findViewById(R.id.webView);
         bar_loading = findViewById(R.id.bar_loading);
-        frame_full = findViewById(R.id.frame_full);
+        frame_video = findViewById(R.id.frame_video);
     }
 
     private void setActionBar() {
@@ -105,7 +108,9 @@ public class WebkitActivity extends AppCompatActivity {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-        webView.setWebChromeClient(new WebChromeClient() {
+        View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null);
+
+        mWebChromeClient = new VideoEnabledWebChromeClient(frame_webview, frame_video, loadingView, webView) {
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -129,27 +134,40 @@ public class WebkitActivity extends AppCompatActivity {
                 }
             }
 
-            @Override
-            public void onShowCustomView(View view, CustomViewCallback callback) {
-                super.onShowCustomView(view, callback);
-                if (frame_full == null || frame_full.getChildCount() > 0) {
-                    return;
-                }
-
-                showFullView(view);
-            }
+        };
+        mWebChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
 
             @Override
-            public void onHideCustomView() {
-                super.onHideCustomView();
-                if (frame_full == null || frame_full.getChildCount() == 0) {
-                    return;
-                }
+            public void toggledFullscreen(boolean fullscreen) {
+                if (fullscreen) {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
 
-                hideFullView();
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                    }
+
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+                } else {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    }
+
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
             }
 
         });
+
+        webView.setWebChromeClient(mWebChromeClient);
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -169,8 +187,7 @@ public class WebkitActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (frame_full != null && frame_full.getChildCount() > 0) {//正处于全屏状态
-            hideFullView();
+        if (mWebChromeClient != null && mWebChromeClient.onBackPressed()) {
             return true;
         }
 
@@ -189,42 +206,6 @@ public class WebkitActivity extends AppCompatActivity {
         }
 
         onBackPressed();
-    }
-
-    /**
-     * 显示全屏控件
-     */
-    private void showFullView(View view) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        if (webView != null) {
-            webView.setVisibility(View.GONE);
-        }
-
-        if (frame_full != null) {
-            frame_full.setVisibility(View.VISIBLE);
-            frame_full.addView(view);
-            frame_full.bringToFront();
-        }
-    }
-
-    /**
-     * 隐藏全屏控件
-     */
-    private void hideFullView() {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        if (webView != null) {
-            webView.setVisibility(View.VISIBLE);
-            webView.reload();
-        }
-
-        if (frame_full != null) {
-            frame_full.setVisibility(View.GONE);
-            frame_full.removeAllViews();
-        }
     }
 
     @Override
