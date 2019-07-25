@@ -21,46 +21,25 @@ import java.util.Map;
  *
  * @author Cristian Perez (http://cpr.name)
  */
-public class VideoEnabledWebView extends WebView {
+public class XWebView extends WebView {
 
-    public class JavascriptInterface {
-
-        @android.webkit.JavascriptInterface
-        @SuppressWarnings("unused")
-        public void notifyVideoEnd() {
-            // Must match Javascript interface method of VideoEnabledWebChromeClient
-            // This code is not executed in the UI thread, so we must force that to happen
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (videoEnabledWebChromeClient != null) {
-                        videoEnabledWebChromeClient.onHideCustomView();
-                    }
-                }
-
-            });
-        }
-
-    }
-
-    private VideoEnabledWebChromeClient videoEnabledWebChromeClient;
+    private XWebChromeClient mWebChromeClient;
     private boolean addedJavascriptInterface;
 
     @SuppressWarnings("unused")
-    public VideoEnabledWebView(Context context) {
+    public XWebView(Context context) {
         super(context);
         addedJavascriptInterface = false;
     }
 
     @SuppressWarnings("unused")
-    public VideoEnabledWebView(Context context, AttributeSet attrs) {
+    public XWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         addedJavascriptInterface = false;
     }
 
     @SuppressWarnings("unused")
-    public VideoEnabledWebView(Context context, AttributeSet attrs, int defStyle) {
+    public XWebView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         addedJavascriptInterface = false;
     }
@@ -72,7 +51,7 @@ public class VideoEnabledWebView extends WebView {
      */
     @SuppressWarnings("unused")
     public boolean isVideoFullscreen() {
-        return videoEnabledWebChromeClient != null && videoEnabledWebChromeClient.isVideoFullscreen();
+        return mWebChromeClient != null && mWebChromeClient.isVideoFullscreen();
     }
 
     /**
@@ -83,8 +62,8 @@ public class VideoEnabledWebView extends WebView {
     public void setWebChromeClient(WebChromeClient client) {
         getSettings().setJavaScriptEnabled(true);
 
-        if (client instanceof VideoEnabledWebChromeClient) {
-            this.videoEnabledWebChromeClient = (VideoEnabledWebChromeClient) client;
+        if (client instanceof XWebChromeClient) {
+            mWebChromeClient = (XWebChromeClient) client;
         }
 
         super.setWebChromeClient(client);
@@ -122,6 +101,25 @@ public class VideoEnabledWebView extends WebView {
 
             addedJavascriptInterface = true;
         }
+    }
+
+    public class JavascriptInterface {
+
+        @android.webkit.JavascriptInterface
+        @SuppressWarnings("unused")
+        public void notifyVideoEnd() {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (mWebChromeClient != null) {
+                        mWebChromeClient.onHideCustomView();
+                    }
+                }
+
+            });
+        }
+
     }
 
 }

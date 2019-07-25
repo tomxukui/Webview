@@ -32,11 +32,11 @@ public class WebkitActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView tv_title;
     private FrameLayout frame_webview;
-    private VideoEnabledWebView webView;
+    private XWebView webView;
     private ProgressBar bar_loading;
     private FrameLayout frame_video;
 
-    private VideoEnabledWebChromeClient mWebChromeClient;
+    private XWebChromeClient mWebChromeClient;
 
     private String mAddress;
 
@@ -110,7 +110,7 @@ public class WebkitActivity extends AppCompatActivity {
 
         View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null);
 
-        mWebChromeClient = new VideoEnabledWebChromeClient(frame_webview, frame_video, loadingView, webView) {
+        mWebChromeClient = new XWebChromeClient(frame_webview, frame_video, loadingView, webView) {
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -135,7 +135,7 @@ public class WebkitActivity extends AppCompatActivity {
             }
 
         };
-        mWebChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
+        mWebChromeClient.setOnToggledFullscreen(new XWebChromeClient.ToggledFullscreenCallback() {
 
             @Override
             public void toggledFullscreen(boolean fullscreen) {
