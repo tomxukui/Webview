@@ -2,6 +2,8 @@ package com.xukui.webview.webkit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,10 +14,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,6 +35,7 @@ public class WebkitActivity extends AppCompatActivity {
     private TextView tv_title;
     private WebView webView;
     private ProgressBar bar_loading;
+    private FrameLayout frame_full;
 
     private String mAddress;
 
@@ -55,6 +60,7 @@ public class WebkitActivity extends AppCompatActivity {
         tv_title = findViewById(R.id.tv_title);
         webView = findViewById(R.id.webView);
         bar_loading = findViewById(R.id.bar_loading);
+        frame_full = findViewById(R.id.frame_full);
     }
 
     private void setActionBar() {
@@ -124,6 +130,45 @@ public class WebkitActivity extends AppCompatActivity {
                 }
             }
 
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                fullScreen();
+
+                if (webView != null) {
+                    webView.setVisibility(View.GONE);
+                }
+
+                if (frame_full != null) {
+                    frame_full.setVisibility(View.VISIBLE);
+                    frame_full.addView(view);
+                }
+                super.onShowCustomView(view, callback);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                fullScreen();
+
+                if (webView != null) {
+                    webView.setVisibility(View.VISIBLE);
+                }
+
+                if (frame_full != null) {
+                    frame_full.setVisibility(View.GONE);
+                    frame_full.removeAllViews();
+                }
+                super.onHideCustomView();
+            }
+
+            private void fullScreen() {
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+                } else {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+            }
+
         });
         webView.setWebViewClient(new WebViewClient() {
 
@@ -159,6 +204,29 @@ public class WebkitActivity extends AppCompatActivity {
         }
 
         onBackPressed();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        switch (config.orientation) {
+
+            case Configuration.ORIENTATION_LANDSCAPE: {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            break;
+
+            case Configuration.ORIENTATION_PORTRAIT: {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            }
+            break;
+
+            default:
+                break;
+
+        }
     }
 
     @Override
