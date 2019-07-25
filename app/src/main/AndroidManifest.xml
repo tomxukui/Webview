@@ -25,10 +25,12 @@
 
         <activity
             android:name=".crosswalk.CrosswalkActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:hardwareAccelerated="true" />
 
         <activity
             android:name=".webkit.WebkitActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:hardwareAccelerated="true" />
 
     </application>
