@@ -4,14 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.xukui.webview.R;
 
 import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkSettings;
+import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
 
 public class CrosswalkActivity extends AppCompatActivity {
+
+    private static final String TAG = "CrosswalkActivity";
 
     private static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
@@ -50,17 +54,47 @@ public class CrosswalkActivity extends AppCompatActivity {
         //开启多窗口
         XWalkPreferences.setValue(XWalkPreferences.SUPPORT_MULTIPLE_WINDOWS, true);
 
-        //设置滑动
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setScrollBarStyle(XWalkView.SCROLLBARS_OUTSIDE_INSET);
-        webView.setScrollbarFadingEnabled(true);
-
         //设置缩放
         XWalkSettings settings = webView.getSettings();
         settings.setSupportSpatialNavigation(true);
         settings.setBuiltInZoomControls(true);
         settings.setSupportZoom(true);
+
+        //设置滑动
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setScrollBarStyle(XWalkView.SCROLLBARS_OUTSIDE_INSET);
+        webView.setScrollbarFadingEnabled(true);
+        //不使用缓存
+        webView.setDrawingCacheEnabled(false);
+        //清除历史记录
+        webView.getNavigationHistory().clear();
+        //清楚包括磁盘缓存
+        webView.clearCache(true);
+        //设置回调
+        webView.setUIClient(new XWalkUIClient(webView) {
+
+            @Override
+            public void onPageLoadStarted(XWalkView view, String url) {
+                super.onPageLoadStarted(view, url);
+                Log.d(TAG, "开始加载网页: " + url);
+            }
+
+            @Override
+            public void onPageLoadStopped(XWalkView view, String url, LoadStatus status) {
+                super.onPageLoadStopped(view, url, status);
+                if (LoadStatus.FINISHED == status) {
+                    Log.d(TAG, "加载网页成功: " + url);
+
+                } else if (LoadStatus.CANCELLED == status) {
+                    Log.d(TAG, "加载网页已取消: " + url);
+
+                } else {
+                    Log.e(TAG, "加载网页失败: " + url);
+                }
+            }
+
+        });
     }
 
     @Override
