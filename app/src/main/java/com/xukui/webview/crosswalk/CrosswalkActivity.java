@@ -77,25 +77,6 @@ public class CrosswalkActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onSupportBackPressed();
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void onSupportBackPressed() {
-        if (webView != null && webView.getNavigationHistory().canGoBack()) {
-            webView.getNavigationHistory().navigate(XWalkNavigationHistory.Direction.BACKWARD, 1);
-            return;
-        }
-
-        onBackPressed();
-    }
-
     private void setView() {
         //支持javascript
         XWalkPreferences.setValue(XWalkPreferences.ENABLE_JAVASCRIPT, true);
@@ -189,6 +170,25 @@ public class CrosswalkActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onSupportBackPressed();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void onSupportBackPressed() {
+        if (webView != null && webView.getNavigationHistory().canGoBack()) {
+            webView.getNavigationHistory().navigate(XWalkNavigationHistory.Direction.BACKWARD, 1);
+            return;
+        }
+
+        onBackPressed();
     }
 
     @Override

@@ -2,21 +2,34 @@ package com.xukui.webview.webkit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.xukui.webview.R;
 
 public class WebkitActivity extends AppCompatActivity {
 
+    private static final String TAG = "WebkitActivity";
+
     private static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
+    private Toolbar toolbar;
+    private TextView tv_title;
     private WebView webView;
+    private ProgressBar bar_loading;
 
     private String mAddress;
 
@@ -26,6 +39,7 @@ public class WebkitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_webkit);
         initData();
         initView();
+        setActionBar();
         setView();
 
         webView.loadUrl(mAddress);
@@ -36,7 +50,28 @@ public class WebkitActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        tv_title = findViewById(R.id.tv_title);
         webView = findViewById(R.id.webView);
+        bar_loading = findViewById(R.id.bar_loading);
+    }
+
+    private void setActionBar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);//不显示默认标题
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);//显示返回键
+        }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onSupportBackPressed();
+            }
+
+        });
     }
 
     private void setView() {
@@ -51,16 +86,66 @@ public class WebkitActivity extends AppCompatActivity {
         webSettings.setDomStorageEnabled(true);//开启本地DOM存储
         webSettings.setLoadsImagesAutomatically(true); // 加载图片
         webSettings.setMediaPlaybackRequiresUserGesture(false);//播放音频，多媒体需要用户手动？设置为false为可自动播放
+
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (tv_title != null) {
+                    tv_title.setText(title);
+                }
+            }
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (bar_loading != null) {
+                    if (newProgress >= 100) {
+                        bar_loading.setVisibility(View.GONE);
+
+                    } else {
+                        bar_loading.setVisibility(View.VISIBLE);
+                        bar_loading.setProgress(newProgress);
+                    }
+                }
+            }
+
+        });
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                Log.d(TAG, "开始加载网页: " + url);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.d(TAG, "加载网页已结束: " + url);
+            }
+
+        });
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            webView.goBack();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onSupportBackPressed();
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void onSupportBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+
+        onBackPressed();
     }
 
     @Override
