@@ -3,7 +3,6 @@ package com.xukui.webview.webkit;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -132,42 +131,22 @@ public class WebkitActivity extends AppCompatActivity {
 
             @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
-                fullScreen();
-
-                if (webView != null) {
-                    webView.setVisibility(View.GONE);
-                }
-
-                if (frame_full != null) {
-                    frame_full.setVisibility(View.VISIBLE);
-                    frame_full.addView(view);
-                    frame_full.bringToFront();
-                }
                 super.onShowCustomView(view, callback);
+                if (frame_full == null || frame_full.getChildCount() > 0) {
+                    return;
+                }
+
+                showFullView(view);
             }
 
             @Override
             public void onHideCustomView() {
-                fullScreen();
-
-                if (webView != null) {
-                    webView.setVisibility(View.VISIBLE);
-                }
-
-                if (frame_full != null) {
-                    frame_full.setVisibility(View.GONE);
-                    frame_full.removeAllViews();
-                }
                 super.onHideCustomView();
-            }
-
-            private void fullScreen() {
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-                } else {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                if (frame_full == null || frame_full.getChildCount() == 0) {
+                    return;
                 }
+
+                hideFullView();
             }
 
         });
@@ -190,6 +169,11 @@ public class WebkitActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (frame_full != null && frame_full.getChildCount() > 0) {//正处于全屏状态
+            hideFullView();
+            return true;
+        }
+
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             onSupportBackPressed();
             return true;
@@ -207,26 +191,39 @@ public class WebkitActivity extends AppCompatActivity {
         onBackPressed();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration config) {
-        super.onConfigurationChanged(config);
-        switch (config.orientation) {
+    /**
+     * 显示全屏控件
+     */
+    private void showFullView(View view) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            case Configuration.ORIENTATION_LANDSCAPE: {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            }
-            break;
+        if (webView != null) {
+            webView.setVisibility(View.GONE);
+        }
 
-            case Configuration.ORIENTATION_PORTRAIT: {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-            }
-            break;
+        if (frame_full != null) {
+            frame_full.setVisibility(View.VISIBLE);
+            frame_full.addView(view);
+            frame_full.bringToFront();
+        }
+    }
 
-            default:
-                break;
+    /**
+     * 隐藏全屏控件
+     */
+    private void hideFullView() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        if (webView != null) {
+            webView.setVisibility(View.VISIBLE);
+            webView.reload();
+        }
+
+        if (frame_full != null) {
+            frame_full.setVisibility(View.GONE);
+            frame_full.removeAllViews();
         }
     }
 
