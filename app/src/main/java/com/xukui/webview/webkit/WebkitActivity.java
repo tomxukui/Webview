@@ -3,6 +3,7 @@ package com.xukui.webview.webkit;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -75,6 +76,9 @@ public class WebkitActivity extends AppCompatActivity {
     }
 
     private void setView() {
+        //支持chrome调试
+        WebView.setWebContentsDebuggingEnabled(true);
+
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false
         webSettings.setJavaScriptEnabled(true);//是否允许JavaScript脚本运行，默认为false。设置true时，会提醒可能造成XSS漏洞
@@ -84,8 +88,17 @@ public class WebkitActivity extends AppCompatActivity {
         webSettings.setLoadWithOverviewMode(true);//和setUseWideViewPort(true)一起解决网页自适应问题
         webSettings.setAppCacheEnabled(true);//是否使用缓存
         webSettings.setDomStorageEnabled(true);//开启本地DOM存储
-        webSettings.setLoadsImagesAutomatically(true); // 加载图片
+        webSettings.setLoadsImagesAutomatically(true);//加载图片
         webSettings.setMediaPlaybackRequiresUserGesture(false);//播放音频，多媒体需要用户手动？设置为false为可自动播放
+        //允许使用File协议
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
+        //支持http和https混合加载
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
         webView.setWebChromeClient(new WebChromeClient() {
 
