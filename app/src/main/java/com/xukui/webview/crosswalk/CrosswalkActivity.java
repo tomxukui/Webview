@@ -8,12 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xukui.webview.R;
 
 import org.xwalk.core.XWalkNavigationHistory;
 import org.xwalk.core.XWalkPreferences;
+import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkSettings;
 import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
@@ -27,6 +29,7 @@ public class CrosswalkActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView tv_title;
     private XWalkView webView;
+    private ProgressBar bar_loading;
 
     private String mAddress;
 
@@ -50,6 +53,7 @@ public class CrosswalkActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         tv_title = findViewById(R.id.tv_title);
         webView = findViewById(R.id.webView);
+        bar_loading = findViewById(R.id.bar_loading);
     }
 
     private void setActionBar() {
@@ -144,6 +148,23 @@ public class CrosswalkActivity extends AppCompatActivity {
 
                 } else {
                     Log.e(TAG, "加载网页失败: " + url);
+                }
+            }
+
+        });
+        webView.setResourceClient(new XWalkResourceClient(webView) {
+
+            @Override
+            public void onProgressChanged(XWalkView view, int progressInPercent) {
+                super.onProgressChanged(view, progressInPercent);
+                if (bar_loading != null) {
+                    if (progressInPercent >= 100) {
+                        bar_loading.setVisibility(View.GONE);
+
+                    } else {
+                        bar_loading.setVisibility(View.VISIBLE);
+                        bar_loading.setProgress(progressInPercent);
+                    }
                 }
             }
 
