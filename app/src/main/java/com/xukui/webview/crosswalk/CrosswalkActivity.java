@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.xukui.webview.R;
 
+import org.xwalk.core.XWalkNavigationHistory;
 import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkSettings;
 import org.xwalk.core.XWalkUIClient;
@@ -33,6 +36,7 @@ public class CrosswalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crosswalk);
         initData();
         initView();
+        setActionBar();
         setView();
 
         webView.loadUrl(mAddress);
@@ -46,6 +50,43 @@ public class CrosswalkActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         tv_title = findViewById(R.id.tv_title);
         webView = findViewById(R.id.webView);
+    }
+
+    private void setActionBar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);//不显示默认标题
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);//显示返回键
+        }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onSupportBackPressed();
+            }
+
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onSupportBackPressed();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void onSupportBackPressed() {
+        if (webView != null && webView.getNavigationHistory().canGoBack()) {
+            webView.getNavigationHistory().navigate(XWalkNavigationHistory.Direction.BACKWARD, 1);
+            return;
+        }
+
+        onBackPressed();
     }
 
     private void setView() {
