@@ -1,6 +1,7 @@
 package com.xukui.webview.webkit;
 
 import android.media.MediaPlayer;
+import android.support.annotation.Nullable;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
         void toggledFullscreen(boolean fullscreen);
     }
 
-    private View activityNonVideoView;
+    private ViewGroup activityNonVideoView;
     private ViewGroup activityVideoView;
     private View loadingView;
     private VideoEnabledWebView webView;
@@ -53,43 +54,12 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
      *
      * @param activityNonVideoView A View in the activity's layout that contains every other view that should be hidden when the video goes full-screen.
      * @param activityVideoView    A ViewGroup in the activity's layout that will display the video. Typically you would like this to fill the whole layout.
-     */
-    @SuppressWarnings("unused")
-    public VideoEnabledWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView) {
-        this.activityNonVideoView = activityNonVideoView;
-        this.activityVideoView = activityVideoView;
-        this.loadingView = null;
-        this.webView = null;
-        this.isVideoFullscreen = false;
-    }
-
-    /**
-     * Builds a video enabled WebChromeClient.
-     *
-     * @param activityNonVideoView A View in the activity's layout that contains every other view that should be hidden when the video goes full-screen.
-     * @param activityVideoView    A ViewGroup in the activity's layout that will display the video. Typically you would like this to fill the whole layout.
-     * @param loadingView          A View to be shown while the video is loading (typically only used in API level <11). Must be already inflated and not attached to a parent view.
-     */
-    @SuppressWarnings("unused")
-    public VideoEnabledWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView) {
-        this.activityNonVideoView = activityNonVideoView;
-        this.activityVideoView = activityVideoView;
-        this.loadingView = loadingView;
-        this.webView = null;
-        this.isVideoFullscreen = false;
-    }
-
-    /**
-     * Builds a video enabled WebChromeClient.
-     *
-     * @param activityNonVideoView A View in the activity's layout that contains every other view that should be hidden when the video goes full-screen.
-     * @param activityVideoView    A ViewGroup in the activity's layout that will display the video. Typically you would like this to fill the whole layout.
      * @param loadingView          A View to be shown while the video is loading (typically only used in API level <11). Must be already inflated and not attached to a parent view.
      * @param webView              The owner VideoEnabledWebView. Passing it will enable the VideoEnabledWebChromeClient to detect the HTML5 video ended event and exit full-screen.
      *                             Note: The web page must only contain one video tag in order for the HTML5 video ended event to work. This could be improved if needed (see Javascript code).
      */
     @SuppressWarnings("unused")
-    public VideoEnabledWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, VideoEnabledWebView webView) {
+    public VideoEnabledWebChromeClient(ViewGroup activityNonVideoView, ViewGroup activityVideoView, @Nullable View loadingView, VideoEnabledWebView webView) {
         this.activityNonVideoView = activityNonVideoView;
         this.activityVideoView = activityVideoView;
         this.loadingView = loadingView;
@@ -141,6 +111,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
                 videoView.setOnPreparedListener(this);
                 videoView.setOnCompletionListener(this);
                 videoView.setOnErrorListener(this);
+
             } else {
                 // Other classes, including:
                 // - android.webkit.HTML5VideoFullScreen$VideoSurfaceView, which inherits from android.view.SurfaceView (typically API level 11-18)
@@ -165,6 +136,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
                         js += "_ytrp_html5_video.addEventListener('ended', _ytrp_html5_video_ended);";
                     }
                     js += "}";
+
                     webView.loadUrl(js);
                 }
             }
