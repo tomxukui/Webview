@@ -134,13 +134,10 @@ public class WebkitActivity extends AppCompatActivity {
             public void onShowCustomView(View view, CustomViewCallback callback) {
                 fullScreen();
 
-                if (webView != null) {
-                    webView.setVisibility(View.GONE);
-                }
-
                 if (frame_full != null) {
                     frame_full.setVisibility(View.VISIBLE);
                     frame_full.addView(view);
+                    frame_full.bringToFront();
                 }
                 super.onShowCustomView(view, callback);
             }
@@ -148,10 +145,6 @@ public class WebkitActivity extends AppCompatActivity {
             @Override
             public void onHideCustomView() {
                 fullScreen();
-
-                if (webView != null) {
-                    webView.setVisibility(View.VISIBLE);
-                }
 
                 if (frame_full != null) {
                     frame_full.setVisibility(View.GONE);
