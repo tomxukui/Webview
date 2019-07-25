@@ -2,12 +2,15 @@ package com.xukui.webview.crosswalk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
+import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -95,7 +98,7 @@ public class CrosswalkActivity extends AppCompatActivity {
 
     private void setView() {
         //支持javascript
-        XWalkPreferences.setValue("enable-javascript", true);
+        XWalkPreferences.setValue(XWalkPreferences.ENABLE_JAVASCRIPT, true);
         //开启调式,支持谷歌浏览器调式
         XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
         //设置是否允许通过file url加载的Javascript可以访问其他的源,包括其他的文件和http,https等其他的源
@@ -110,6 +113,16 @@ public class CrosswalkActivity extends AppCompatActivity {
         settings.setSupportSpatialNavigation(true);
         settings.setBuiltInZoomControls(true);
         settings.setSupportZoom(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setLoadsImagesAutomatically(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setSupportMultipleWindows(true);
+        settings.setAllowFileAccess(true);
+        settings.setDomStorageEnabled(true);
+        settings.setAllowContentAccess(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         //设置滑动
         webView.setHorizontalScrollBarEnabled(false);
@@ -165,6 +178,13 @@ public class CrosswalkActivity extends AppCompatActivity {
                         bar_loading.setVisibility(View.VISIBLE);
                         bar_loading.setProgress(progressInPercent);
                     }
+                }
+            }
+
+            @Override
+            public void onReceivedSslError(XWalkView view, ValueCallback<Boolean> callback, SslError error) {
+                if (callback != null) {
+                    callback.onReceiveValue(true);
                 }
             }
 
